@@ -55,7 +55,7 @@ BASE_URL = 'https://www.netflix.com/nq/msl_v1/cadmium'
 
 ENDPOINTS = {
     'manifest': BASE_URL + '/pbo_manifests/^1.0.0/router',
-    'license': BASE_URL + '/pbo_licenses/^1.0.0/router',
+    'license': BASE_URL + '/pbo_licenses/^1.0.0/router?reqName=prefetch/license',
 }
 
 VALID_AUTH_SCHEMES = [
@@ -144,11 +144,11 @@ class MslClient:
         manifest_request_data = {
             'version': 2,
             'url': '/manifest',
-            'id': 15429961728572,
+            'id': 163914781658323460,
             'esn': self.msl_session['esn'],
             'languages': self.msl_session['languages'],
-            'uiVersion': 'shakti-v4bf615c3',
-            'clientVersion': '6.0011.511.011',
+            'uiVersion': 'shakti-v02d67cac',
+            'clientVersion': '6.0033.354.911',
             'params': {
                 'type': 'standard',
                 'viewableId': viewable_id,
@@ -160,8 +160,8 @@ class MslClient:
                 'isBranching': False,
                 'useHttpsStreams': True,
                 'imageSubtitleHeight': 720,
-                'uiVersion': 'shakti-v4bf615c3',
-                'clientVersion': '6.0011.511.011',
+                'uiVersion': 'shakti-v02d67cac',
+                'clientVersion': '6.0033.354.911',
                 'supportsPreReleasePin': True,
                 'supportsWatermark': True,
                 'showAllSubDubTracks': False,
@@ -234,21 +234,24 @@ class MslClient:
                 'Manifest must be loaded before license is acquired'
             )
 
+        timestamp = int(time.time() * 10000)
+        xid = str(timestamp + 1610)
+
         license_request_data = {
             'version': 2,
             'url': self.msl_session['license_path'],
-            'id': 15429961788811,
+            'id': timestamp,
             'esn': self.msl_session['esn'],
             'languages': self.msl_session['languages'],
-            'uiVersion': 'shakti-v4bf615c3',
-            'clientVersion': '6.0011.511.011',
+            'uiVersion': 'shakti-v02d67cac',
+            'clientVersion': '6.0033.354.911',
             'params': [{
-                'sessionId': session_id,
+                'drmSessionId': session_id,
                 'clientTime': int(time.time()),
                 'challengeBase64': base64.b64encode(challenge).decode('utf8'),
-                'xid': int((int(time.time()) + 0.1612) * 1000)
+                'xid': xid
             }],
-            'echo': 'sessionId'
+            'echo': 'drmSessionId'
         }
 
         request_data = self.generate_msl_request_data(license_request_data)
